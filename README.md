@@ -40,7 +40,7 @@ data_processed/admissions_features.csv
 
 ## 2. Repository Structure
 
-.
+```text
 ├── data_raw/
 │   └── diabetic_data.csv
 ├── data_processed/
@@ -63,6 +63,7 @@ data_processed/admissions_features.csv
     ├── models_nn.py
     ├── train.py
     └── evaluate.py
+```
 
 --------------------------------------------------------------------------------
 
@@ -166,3 +167,4 @@ All models are constrained by heavy imbalance and noisy tabular data. Neural net
 
 Dataset from the UCI Machine Learning Repository.  
 Project completed for CS 184A.
+
