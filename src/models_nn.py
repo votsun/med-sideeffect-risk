@@ -1,18 +1,32 @@
 import torch
 import torch.nn as nn
 
-class MedicationEmbeddingNet(nn.Module):
-    def __init__(self, vocab_size, embed_dim=32, hidden_dim=64):
+
+class TabularNN(nn.Module):
+    """
+    2-layer MLP for tabular features.
+
+    This matches the model used in 03_model_nn.ipynb:
+    - Input: standardized tabular features (one row per admission)
+    - Hidden layers: 128 -> 64 with ReLU and dropout
+    - Output: single logit (use with BCEWithLogitsLoss)
+    """
+
+    def __init__(self, input_dim, hidden_dim1=128, hidden_dim2=64, dropout=0.3):
         super().__init__()
-        self.embed = nn.Embedding(vocab_size, embed_dim)
-        self.fc = nn.Sequential(
-            nn.Linear(embed_dim + 10, hidden_dim), # 10 = placeholder for demographics
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim1),
             nn.ReLU(),
-            nn.Linear(hidden_dim, 1),
-            nn.Sigmoid(),
+            nn.Dropout(dropout),
+
+            nn.Linear(hidden_dim1, hidden_dim2),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+
+            nn.Linear(hidden_dim2, 1),
         )
 
-    def forward(self, med_ids, demo_features):
-        med_vec = self.embed(med_ids).mean(dim=1)
-        x = torch.cat([med_vec, demo_features], dim=1)
-        return self.fc(x)
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (batch_size, input_dim)
+        # returns logits: (batch_size,)
+        return self.net(x).squeeze(1)
