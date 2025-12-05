@@ -1,170 +1,115 @@
-# Predicting 30-day Hospital Readmission from EHR Data
+# Predicting Readmission Risk from Demographics and Medication Patterns
 
-This project predicts 30-day hospital readmission for diabetic patients using structured EHR (Electronic Health Record) data from the UCI Diabetes 130-US Hospitals dataset.
+This repository contains the code and minimal data for our CS184A final project. We predict readmission risk for diabetic patients using a small structured EHR-style dataset from Kaggle (included in this repo).
 
 We compare:
-- Logistic Regression (L2 and L1)
-- A small feed-forward neural network
+- Logistic Regression (L2)
+- Logistic Regression (L1)
+- A feed-forward neural network
 - Logistic Regression trained on neural-network embeddings
 
-The purpose is to understand how far simple, course-approved models can go on a noisy clinical prediction task.
+The goal is to evaluate how well simple, course-approved models perform on readmission-risk prediction using engineered demographic, utilization, diagnosis, and simplified medication-pattern features.
 
---------------------------------------------------------------------------------
+---
 
-## 1. Dataset
+## Dataset
 
-Source:
-UCI Machine Learning Repository — Diabetes 130-US Hospitals (1999–2008)
+- Source: Kaggle dataset (included locally)
+- Raw file: `data_raw/diabetic_data.csv`
+- Processed features used for the demo: `data_processed/admissions_features.csv`
+- Target: binary readmission label derived from the dataset’s `readmitted` field
 
-Target:
-Binary label representing 30-day readmission.
+The processed file is included to keep the demo fast and fully reproducible.
 
-Class balance:
-Positive class around 11 percent  
-Negative class around 89 percent  
+---
 
-Features included after processing:
-- Age bucket
-- Gender
-- Race
-- Admission and discharge types
-- Diagnosis groupings mapped from ICD-9 codes
-- Number of diagnoses
-- Medication counts and flags
-- Laboratory and procedure utilization features
+## Repository Structure
 
-The cleaned dataset is stored at:
-data_processed/admissions_features.csv
+project/
+- README.md  
+- requirements.txt  
+- project.ipynb  
+- project.html  
+- data_raw/  
+  - diabetic_data.csv  
+- data_processed/  
+  - admissions_features.csv  
+- src/  
+  - data_loading.py  
+  - feature_engineering.py  
+  - models_baseline.py  
+  - models_nn.py  
+  - train.py  
+  - evaluate.py  
 
---------------------------------------------------------------------------------
+---
 
-## 2. Repository Structure
+## Setup
 
-```text
-├── data_raw/
-│   └── diabetic_data.csv
-├── data_processed/
-│   ├── admissions_features.csv
-│   ├── embeddings_train.npy
-│   ├── embeddings_val.npy
-│   ├── embeddings_test.npy
-│   ├── y_train.npy
-│   ├── y_val.npy
-│   └── y_test.npy
-├── notebooks/
-│   ├── 01_build_uci_cohort.ipynb
-│   ├── 02_model_baselines.ipynb
-│   ├── 03_model_nn.ipynb
-│   └── 04_lr_on_embeddings.ipynb
-└── src/
-    ├── data_loading.py
-    ├── feature_engineering.py
-    ├── models_baseline.py
-    ├── models_nn.py
-    ├── train.py
-    └── evaluate.py
-```
+Python 3.9+
 
---------------------------------------------------------------------------------
+Install dependencies:
 
-## 3. Environment and Setup
+pip install -r requirements.txt
 
-Dependencies:
-- Python 3.9 or higher
-- numpy
-- pandas
-- scikit-learn
-- matplotlib
-- seaborn
-- torch
+---
 
-To install dependencies:
-Use pip install commands for the above libraries.
+## How to Run
 
---------------------------------------------------------------------------------
+You can run this project either locally or in Google Colab.
 
-## 4. How to Run the Pipeline
+### Option A: Run locally (recommended)
 
-Step 1: Build the cohort  
-Use the notebook 01_build_uci_cohort.ipynb to:
-- Load raw CSV
-- Clean rows
-- Map ICD-9 codes
-- Engineer features
-- Save admissions_features.csv
+1. Create and activate a Python environment (3.9+).
+2. Install dependencies:
 
-Step 2: Baseline models  
-Use 02_model_baselines.ipynb to train:
-- L2 Logistic Regression
-- L1 Logistic Regression
+   pip install -r requirements.txt
 
-Metrics produced:
-AUROC, AUPRC, Accuracy, Confusion Matrix, Classification Report
+3. Launch Jupyter:
+   - `jupyter lab`
+   - or `jupyter notebook`
 
-Step 3: Neural network  
-Use 03_model_nn.ipynb to train a small feed-forward network:
-Input → Linear 128 → ReLU → Dropout → Linear 64 → ReLU → Dropout → Linear 1
+4. Open and run:
+   - `project.ipynb`
+   - Kernel → Restart & Run All
 
-This notebook also:
-- Uses BCEWithLogitsLoss with class weighting
-- Saves hidden layer embeddings
-- Saves y labels for all splits
+This notebook:
+- Loads `data_processed/admissions_features.csv`
+- Creates train/val/test splits
+- Trains and evaluates:
+  - L2 logistic regression
+  - L1 logistic regression
+  - small feed-forward NN
+  - logistic regression on NN embeddings
+- Prints metrics and displays the main plots used in our presentation
 
-Step 4: Logistic Regression on embeddings  
-Use 04_lr_on_embeddings.ipynb to:
-- Load saved embeddings
-- Standardize them
-- Train Logistic Regression
-- Evaluate AUROC, AUPRC, Accuracy
-- Plot confusion matrix and classification report
+### Option B: Run in Google Colab
 
---------------------------------------------------------------------------------
+1. Upload the entire `project/` folder to Colab (or upload files individually).
+2. Open `project.ipynb`.
+3. Install dependencies in a cell:
 
-## 5. Results
+   !pip install -r requirements.txt
 
-Logistic Regression (L2):
-- AUROC around 0.63 to 0.64
-- AUPRC around 0.18 to 0.19
-- Accuracy around 0.67
+4. Run all cells.
 
-Neural Network:
-- AUROC around 0.63 to 0.65
-- AUPRC around 0.20 to 0.21
-- Accuracy around 0.62
-- Higher recall but lower overall accuracy
+If Colab cannot resolve relative paths, make sure your working directory contains:
+- `data_raw/`
+- `data_processed/`
+- `src/`
+- `project.ipynb`
 
-Logistic Regression on embeddings:
-- AUROC around 0.62 to 0.63
-- AUPRC around 0.19 to 0.20
-- Accuracy around 0.62
+---
 
-Interpretation:
-All models are constrained by heavy imbalance and noisy tabular data. Neural network improves recall slightly, but accuracy remains similar.
+## Notes
 
---------------------------------------------------------------------------------
+- The Kaggle dataset is small enough to include in the repository.
+- The demo is designed to run end-to-end without external downloads.
+- Models and metrics are intentionally limited to course-appropriate methods.
 
-## 6. Limitations
+---
 
-- Strong class imbalance affects accuracy
-- Dataset is noisy and limited to coded EHR fields
-- Only simple course-approved models used:
-  Logistic Regression and feed-forward neural networks
-- More powerful tabular models such as XGBoost were intentionally not used
+## Acknowledgments
 
---------------------------------------------------------------------------------
-
-## 7. Possible Extensions (Not Implemented)
-
-- Better comorbidity or medication feature engineering
-- Threshold tuning for accuracy vs recall tradeoff
-- Focal loss for imbalance
-- More expressive NN architectures
-- Out-of-time validation
-
---------------------------------------------------------------------------------
-
-## 8. Acknowledgments
-
-Dataset from the UCI Machine Learning Repository.  
+Dataset sourced from [Kaggle](https://www.kaggle.com/datasets/dubradave/hospital-readmissions/data/discussion).  
 Project completed for CS 184A.
-
