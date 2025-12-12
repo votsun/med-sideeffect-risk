@@ -29,7 +29,6 @@ project/
 - README.md  
 - requirements.txt  
 - project.ipynb  
-- project.html  
 - data_raw/  
   - diabetic_data.csv  
 - data_processed/  
@@ -123,4 +122,5 @@ If Colab cannot resolve relative paths, make sure your working directory contain
 
 Dataset sourced from [Kaggle](https://www.kaggle.com/datasets/dubradave/hospital-readmissions/data/discussion).  
 Project completed for CS 184A.
+
 
