@@ -33,7 +33,12 @@ project/
 - data_raw/  
   - diabetic_data.csv  
 - data_processed/  
-  - admissions_features.csv  
+  - admissions_features.csv
+- notebooks/
+  - 01_build_cohort.ipynb
+  - 02_model_baselines.ipynb
+  - 03_model_nn.ipynb
+  - 04_lr_on_embeddings.ipynb
 - src/  
   - data_loading.py  
   - feature_engineering.py  
@@ -73,15 +78,20 @@ You can run this project either locally or in Google Colab.
    - `project.ipynb`
    - Kernel → Restart & Run All
 
-This notebook:
-- Loads `data_processed/admissions_features.csv`
+This notebook is a stitched summary of all four analysis notebooks. It:
+- Walks through the same sections as:
+  - `01_build_cohort.ipynb`
+  - `02_model_baselines.ipynb`
+  - `03_model_nn.ipynb`
+  - `04_lr_on_embeddings.ipynb`
+- Loads the processed feature file `data_processed/admissions_features.csv`
 - Creates train/val/test splits
 - Trains and evaluates:
   - L2 logistic regression
   - L1 logistic regression
-  - small feed-forward NN
-  - logistic regression on NN embeddings
-- Prints metrics and displays the main plots used in our presentation
+  - A small feed-forward neural network
+  - Logistic regression on the neural-network embeddings
+- Reproduces the key metrics and plots that appear in the report and slides
 
 ### Option B: Run in Google Colab
 
@@ -113,3 +123,4 @@ If Colab cannot resolve relative paths, make sure your working directory contain
 
 Dataset sourced from [Kaggle](https://www.kaggle.com/datasets/dubradave/hospital-readmissions/data/discussion).  
 Project completed for CS 184A.
+
